@@ -9,6 +9,12 @@ function formatAgo(date: Date | null): string {
   return `${Math.floor(secs / 60)}m ago`;
 }
 
+function getTagline(bpm: number | null, isError: boolean): string {
+  if (isError) return "500: Fatal error. Goodbye, world.";
+  if (bpm !== null && bpm < 55) return "400: Waaaaan! Heartbeat glitching...";
+  return "200: All systems green. Heartbeat: True.";
+}
+
 export default function App() {
   const { data, error, lastFetched } = useHeartRate();
 
@@ -29,11 +35,12 @@ export default function App() {
       <div className={styles.bpmWrap}>
         <div className={styles.ring} />
         <div className={styles.ring} />
+        <div className={styles.ring} />
         <span className={`${styles.bpm} ${isError ? styles.error : ""}`}>{bpm}</span>
         <span className={styles.unit}>bpm</span>
       </div>
 
-      <p className={styles.tagline}>yes, I'm still here</p>
+      <p className={styles.tagline}>{getTagline(data?.bpm ?? null, isError)}</p>
 
       <div className={styles.meta}>
         <div className={styles.metaItem}>
@@ -42,7 +49,7 @@ export default function App() {
         </div>
         <div className={styles.metaItem}>
           <span className={styles.metaLabel}>Source</span>
-          <span className={styles.metaValue}>Oura Gen3</span>
+          <span className={styles.metaValue}>Oura Ring 4</span>
         </div>
         <div className={styles.metaItem}>
           <span className={styles.metaLabel}>Status</span>
