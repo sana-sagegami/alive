@@ -1,11 +1,10 @@
-import { useState, useEffect } from "react";
 import styles from "./App.module.scss";
 import { EcgLine } from "./components/EcgLine/EcgLine";
 import { useHeartRate } from "./hooks/useHeartRate";
 
-function formatAgo(date: Date | null, now: number): string {
+function formatAgo(date: Date | null): string {
   if (!date) return "—";
-  const secs = Math.floor((now - date.getTime()) / 1000);
+  const secs = Math.floor((Date.now() - date.getTime()) / 1000);
   if (secs < 60) return `${secs}s ago`;
   return `${Math.floor(secs / 60)}m ago`;
 }
@@ -30,12 +29,6 @@ const metaValueClass: Record<"ok" | "warn" | "err", string> = {
 
 export default function App() {
   const { data, error, lastFetched } = useHeartRate();
-  const [now, setNow] = useState(() => Date.now());
-
-  useEffect(() => {
-    const id = setInterval(() => setNow(Date.now()), 1000);
-    return () => clearInterval(id);
-  }, []);
 
   const isError = !!error || !data;
   const bpm = data?.bpm ?? "—";
@@ -67,7 +60,7 @@ export default function App() {
       <div className={styles.meta}>
         <div className={styles.metaItem}>
           <span className={styles.metaLabel}>Updated</span>
-          <span className={styles.metaValue}>{formatAgo(lastFetched, now)}</span>
+          <span className={styles.metaValue}>{formatAgo(lastFetched)}</span>
         </div>
         <div className={styles.metaItem}>
           <span className={styles.metaLabel}>Source</span>
