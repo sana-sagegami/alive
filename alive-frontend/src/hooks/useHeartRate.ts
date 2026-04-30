@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 
 const WORKER_URL = import.meta.env.VITE_WORKER_URL;
-const POLL_INTERVAL = 60_000; // 1分ごとにポーリング
+const POLL_INTERVAL = 60_000;
 
 interface HeartRateData {
   bpm: number;
@@ -13,25 +13,32 @@ export function useHeartRate() {
   const [error, setError] = useState<string | null>(null);
   const [lastFetched, setLastFetched] = useState<Date | null>(null);
 
-  const fetch_ = useCallback(async () => {
-    try {
-      const res = await fetch(WORKER_URL);
-      if (!res.ok) throw new Error("fetch failed");
-      const json = await res.json();
-      if (json.heartrate) {
-        setData(json.heartrate);
-        setLastFetched(new Date());
-        setError(null);
-      }
-    } catch {
-      setError("signal lost");
-    }
-  }, []);
-
   useEffect(() => {
-    const id = setInterval(fetch_, POLL_INTERVAL);
-    return () => clearInterval(id);
-  }, [fetch_]);
+    let cancelled = false;
+
+    async function poll() {
+      try {
+        const res = await fetch(WORKER_URL);
+        if (!res.ok) throw new Error("fetch failed");
+        const json = await res.json();
+        if (cancelled) return;
+        if (json.heartrate) {
+          setData(json.heartrate);
+          setLastFetched(new Date());
+          setError(null);
+        }
+      } catch {
+        if (!cancelled) setError("signal lost");
+      }
+    }
+
+    poll();
+    const id = setInterval(poll, POLL_INTERVAL);
+    return () => {
+      cancelled = true;
+      clearInterval(id);
+    };
+  }, []);
 
   return { data, error, lastFetched };
 }
