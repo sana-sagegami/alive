@@ -1,0 +1,29 @@
+# Node
+node_modules
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build
+.next
+out
+build
+dist
+coverage
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Assets
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.ico
+*.svg
+*.pdf
+*.mp4
+*.zip
+*.md

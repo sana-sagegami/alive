@@ -1,0 +1,142 @@
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@300;400&display=swap');
+
+.root {
+  min-height: 100dvh;
+  background: #080808;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'DM Mono', monospace;
+  padding: 40px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.statusRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 40px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  background: #E24B4A;
+  border-radius: 50%;
+  animation: pulse 1.4s ease-in-out infinite;
+
+  &.error { background: #444; animation: none; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.7; transform: scale(0.85); }
+}
+
+.statusLabel {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: #E24B4A;
+  text-transform: uppercase;
+
+  &.error { color: #444; }
+}
+
+.bpmWrap {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.ring {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1px solid rgba(226, 75, 74, 0.15);
+  pointer-events: none;
+  animation: ringPulse 1.4s ease-in-out infinite;
+
+  &:nth-child(1) { width: 180px; height: 180px; }
+  &:nth-child(2) { width: 220px; height: 220px; border-color: rgba(226,75,74,0.06); animation-delay: 0.2s; }
+}
+
+@keyframes ringPulse {
+  0%, 100% { transform: translate(-50%,-50%) scale(1); opacity: 1; }
+  50%       { transform: translate(-50%,-50%) scale(1.06); opacity: 0.4; }
+}
+
+.bpm {
+  font-size: clamp(72px, 15vw, 100px);
+  font-weight: 300;
+  color: #F5F0E8;
+  letter-spacing: -4px;
+  line-height: 1;
+  animation: tick 1.4s ease-in-out infinite;
+  transition: color 0.3s;
+
+  &.error { color: #333; animation: none; }
+}
+
+@keyframes tick {
+  0%, 85%, 100% { transform: scale(1); }
+  5%            { transform: scale(1.02); }
+}
+
+.unit {
+  font-size: 13px;
+  font-weight: 300;
+  color: #444;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.tagline {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-size: clamp(18px, 4vw, 24px);
+  color: #2E2E2C;
+  margin: 24px 0 32px;
+}
+
+.meta {
+  display: flex;
+  gap: 32px;
+  border-top: 0.5px solid #141414;
+  padding-top: 20px;
+
+  &Item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  &Label {
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: #282828;
+    text-transform: uppercase;
+  }
+
+  &Value {
+    font-size: 12px;
+    color: #555;
+    font-weight: 300;
+  }
+}
+
+.byline {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  color: #1A1A1A;
+  text-transform: uppercase;
+}
