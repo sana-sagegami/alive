@@ -10,7 +10,7 @@ function formatAgo(date: Date | null): string {
 }
 
 const STATUS = {
-  ok:   { code: 200, key: "ok"   as const, message: "All systems green. Heartbeat: True.", label: "Alive" },
+  ok:   { code: 200, key: "ok"   as const, message: "Hello, I’m still here and alive!", label: "Alive" },
   warn: { code: 400, key: "warn" as const, message: "Waaaaan! Heartbeat glitching...",    label: "Weak"  },
   err:  { code: 500, key: "err"  as const, message: "Fatal error. Goodbye, world.",        label: "Unknown" },
 };
@@ -54,10 +54,6 @@ export default function App() {
       </div>
 
       <div className={styles.statusDisplay}>
-        <span className={`${styles.statusCode} ${styles[status.key]}`}>
-          {status.code}
-        </span>
-        <div className={`${styles.statusDivider} ${styles[status.key]}`} />
         <p className={styles.statusMessage}>{status.message}</p>
       </div>
 
