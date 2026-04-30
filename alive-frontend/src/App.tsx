@@ -9,17 +9,30 @@ function formatAgo(date: Date | null): string {
   return `${Math.floor(secs / 60)}m ago`;
 }
 
-function getTagline(bpm: number | null, isError: boolean): string {
-  if (isError) return "500: Fatal error. Goodbye, world.";
-  if (bpm !== null && bpm < 55) return "400: Waaaaan! Heartbeat glitching...";
-  return "200: All systems green. Heartbeat: True.";
+const STATUS = {
+  ok:   { code: 200, key: "ok"   as const, message: "All systems green. Heartbeat: True.", label: "Alive" },
+  warn: { code: 400, key: "warn" as const, message: "Waaaaan! Heartbeat glitching...",    label: "Weak"  },
+  err:  { code: 500, key: "err"  as const, message: "Fatal error. Goodbye, world.",        label: "Unknown" },
+};
+
+function getStatus(bpm: number | null, isError: boolean) {
+  if (isError)                       return STATUS.err;
+  if (bpm !== null && bpm < 55)      return STATUS.warn;
+  return STATUS.ok;
 }
+
+const metaValueClass: Record<"ok" | "warn" | "err", string> = {
+  ok:   styles.metaValueOk,
+  warn: styles.metaValueWarn,
+  err:  styles.metaValueErr,
+};
 
 export default function App() {
   const { data, error, lastFetched } = useHeartRate();
 
   const isError = !!error || !data;
   const bpm = data?.bpm ?? "—";
+  const status = getStatus(data?.bpm ?? null, isError);
 
   return (
     <main className={styles.root}>
@@ -40,7 +53,13 @@ export default function App() {
         <span className={styles.unit}>bpm</span>
       </div>
 
-      <p className={styles.tagline}>{getTagline(data?.bpm ?? null, isError)}</p>
+      <div className={styles.statusDisplay}>
+        <span className={`${styles.statusCode} ${styles[status.key]}`}>
+          {status.code}
+        </span>
+        <div className={`${styles.statusDivider} ${styles[status.key]}`} />
+        <p className={styles.statusMessage}>{status.message}</p>
+      </div>
 
       <div className={styles.meta}>
         <div className={styles.metaItem}>
@@ -53,8 +72,8 @@ export default function App() {
         </div>
         <div className={styles.metaItem}>
           <span className={styles.metaLabel}>Status</span>
-          <span className={styles.metaValue} style={{ color: isError ? "#333" : "#4A7A3F" }}>
-            {isError ? "unknown" : "Alive"}
+          <span className={`${styles.metaValue} ${metaValueClass[status.key]}`}>
+            {status.label}
           </span>
         </div>
       </div>

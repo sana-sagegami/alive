@@ -137,17 +137,17 @@
 
   &:nth-child(1) {
     width: 280px; height: 280px;
-    border: 1px solid rgba(226, 75, 74, 0.18);
+    border: 1.5px solid rgba(226, 75, 74, 0.55);
     animation: ringPulse 1.4s ease-in-out infinite;
   }
   &:nth-child(2) {
     width: 360px; height: 360px;
-    border: 1px solid rgba(226, 75, 74, 0.08);
+    border: 1px solid rgba(226, 75, 74, 0.28);
     animation: ringPulse 1.4s 0.2s ease-in-out infinite;
   }
   &:nth-child(3) {
     width: 440px; height: 440px;
-    border: 1px solid rgba(226, 75, 74, 0.04);
+    border: 1px solid rgba(226, 75, 74, 0.12);
     animation: ringPulse 1.4s 0.4s ease-in-out infinite;
   }
 }
@@ -173,16 +173,55 @@
   margin-bottom: 16px;
 }
 
-// ─── Tagline (slot 4) ─────────────────────────────────────────────────────────
+// ─── Status display (slot 4) ──────────────────────────────────────────────────
 
-.tagline {
-  font-family: 'Instrument Serif', serif;
-  font-style: italic;
-  font-size: clamp(26px, 5vw, 44px);
-  color: #4A4A4A;
+.statusDisplay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
   margin: 32px 0 48px;
   animation: fadeUp 0.7s 0.7s ease both;
 }
+
+.statusCode {
+  font-family: 'DM Mono', monospace;
+  font-size: clamp(12px, 4vw, 46px);
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  transition: color 0.6s, text-shadow 0.6s;
+
+  &.ok   { color: #4ADE80; text-shadow: 0 0 40px #4ADE8055, 0 0 100px #4ADE8022; }
+  &.warn { color: #FBBF24; text-shadow: 0 0 40px #FBBF2455, 0 0 100px #FBBF2422; }
+  &.err  { color: #E24B4A; text-shadow: 0 0 40px #E24B4A55, 0 0 100px #E24B4A22; }
+}
+
+.statusDivider {
+  width: 10rem;
+  height: 0.5px;
+  border-radius: 1px;
+  transition: background 0.6s;
+
+  &.ok   { background: rgba(74, 222, 128, 0.5); }
+  &.warn { background: rgba(251, 191, 36, 0.5); }
+  &.err  { background: rgba(226, 75, 74, 0.5); }
+}
+
+.statusMessage {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-size: clamp(16px, 2.8vw, 26px);
+  color: #4A4A4A;
+  margin: 0;
+  text-align: center;
+  transition: color 0.6s;
+}
+
+// status tint on metaValue
+.metaValueOk   { color: #4ADE80 !important; }
+.metaValueWarn { color: #FBBF24 !important; }
+.metaValueErr  { color: #555    !important; }
 
 // ─── Meta (slot 5) ────────────────────────────────────────────────────────────
 
