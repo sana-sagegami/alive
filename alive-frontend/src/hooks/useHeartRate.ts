@@ -26,6 +26,9 @@ export function useHeartRate() {
           setData(json.heartrate);
           setLastFetched(new Date());
           setError(null);
+        } else {
+          setData(null);
+          setError(json.error_reason ?? "no data");
         }
       } catch {
         if (!cancelled) setError("signal lost");
