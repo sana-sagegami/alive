@@ -18,7 +18,7 @@ interface FetchResult {
 
 async function fetchLatestFromOura(env: Env): Promise<FetchResult> {
 	const now = new Date();
-	const from = new Date(now.getTime() - 12 * 60 * 60 * 1000);
+	const from = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
 	const url = new URL(OURA_API);
 	url.searchParams.set('start_datetime', from.toISOString());
