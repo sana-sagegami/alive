@@ -62,8 +62,19 @@ export default {
 			return new Response(null, { headers: corsHeaders });
 		}
 
-		const cached = await env.HEARTRATE_KV.get('latest');
-		const body = cached ?? JSON.stringify({ heartrate: null, error_reason: 'kv not initialized (cron not yet run)' });
+		if (new URL(request.url).pathname === '/debug') {
+			const result = await fetchLatestFromOura(env);
+			return new Response(JSON.stringify(result), { headers: corsHeaders });
+		}
+
+		let cached = await env.HEARTRATE_KV.get('latest');
+		if (!cached) {
+			const result = await fetchLatestFromOura(env);
+			const json = JSON.stringify(result);
+			await env.HEARTRATE_KV.put('latest', json, { expirationTtl: 300 });
+			cached = json;
+		}
+		const body = cached;
 
 		return new Response(body, {
 			headers: { ...corsHeaders, 'Cache-Control': 'no-store' },

@@ -3,7 +3,8 @@
     "allow": [
       "Bash(curl -s https://alive-worker.alive-sana.workers.dev)",
       "Bash(python3 -m json.tool)",
-      "Bash(npx wrangler *)"
+      "Bash(npx wrangler *)",
+      "Bash(curl -s https://alive-worker.alive-sana.workers.dev/debug)"
     ]
   }
 }

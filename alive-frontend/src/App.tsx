@@ -59,10 +59,6 @@ export default function App() {
 
       <div className={styles.meta}>
         <div className={styles.metaItem}>
-          <span className={styles.metaLabel}>Updated</span>
-          <span className={styles.metaValue}>{formatAgo(lastFetched)}</span>
-        </div>
-        <div className={styles.metaItem}>
           <span className={styles.metaLabel}>Source</span>
           <span className={styles.metaValue}>Oura Ring 4</span>
         </div>
