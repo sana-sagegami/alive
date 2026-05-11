@@ -2,13 +2,6 @@ import styles from "./App.module.scss";
 import { EcgLine } from "./components/EcgLine/EcgLine";
 import { useHeartRate } from "./hooks/useHeartRate";
 
-function formatAgo(date: Date | null): string {
-  if (!date) return "—";
-  const secs = Math.floor((Date.now() - date.getTime()) / 1000);
-  if (secs < 60) return `${secs}s ago`;
-  return `${Math.floor(secs / 60)}m ago`;
-}
-
 const STATUS = {
   ok:   { code: 200, key: "ok"   as const, message: "Hello, I'm still here and alive!", label: "Alive" },
   warn: { code: 400, key: "warn" as const, message: "Waaaaan! Heartbeat glitching...",    label: "Weak"  },
@@ -28,7 +21,7 @@ const metaValueClass: Record<"ok" | "warn" | "err", string> = {
 };
 
 export default function App() {
-  const { data, error, lastFetched } = useHeartRate();
+  const { data, error } = useHeartRate();
 
   const isError = !!error || !data;
   const bpm = data?.bpm ?? "—";
