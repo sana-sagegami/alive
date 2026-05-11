@@ -11,7 +11,12 @@ interface HeartrateEntry {
 	timestamp: string;
 }
 
-async function fetchLatestFromOura(env: Env): Promise<HeartrateEntry | null> {
+interface FetchResult {
+	heartrate: HeartrateEntry | null;
+	error_reason: string | null;
+}
+
+async function fetchLatestFromOura(env: Env): Promise<FetchResult> {
 	const now = new Date();
 	const from = new Date(now.getTime() - 12 * 60 * 60 * 1000);
 
@@ -19,20 +24,30 @@ async function fetchLatestFromOura(env: Env): Promise<HeartrateEntry | null> {
 	url.searchParams.set('start_datetime', from.toISOString());
 	url.searchParams.set('end_datetime', now.toISOString());
 
-	const res = await fetch(url.toString(), {
-		headers: { Authorization: `Bearer ${env.OURA_TOKEN}` },
-	});
-	if (!res.ok) return null;
+	let res: Response;
+	try {
+		res = await fetch(url.toString(), {
+			headers: { Authorization: `Bearer ${env.OURA_TOKEN}` },
+		});
+	} catch (e) {
+		return { heartrate: null, error_reason: `network error: ${e}` };
+	}
+
+	if (!res.ok) {
+		return { heartrate: null, error_reason: `oura api ${res.status}: ${await res.text()}` };
+	}
 
 	const data = await res.json<{ data: HeartrateEntry[] }>();
-	return data.data.at(-1) ?? null;
+	const latest = data.data.at(-1) ?? null;
+	const error_reason = latest === null ? 'no data in last 12h' : null;
+	return { heartrate: latest, error_reason };
 }
 
 export default {
 	// cronで5分ごとに実行 → KVに最新データを保存
 	async scheduled(_event: ScheduledEvent, env: Env): Promise<void> {
-		const latest = await fetchLatestFromOura(env);
-		await env.HEARTRATE_KV.put('latest', JSON.stringify({ heartrate: latest }));
+		const result = await fetchLatestFromOura(env);
+		await env.HEARTRATE_KV.put('latest', JSON.stringify(result));
 	},
 
 	// フロントエンドからのリクエスト → KVから読んで返す
@@ -48,7 +63,7 @@ export default {
 		}
 
 		const cached = await env.HEARTRATE_KV.get('latest');
-		const body = cached ?? JSON.stringify({ heartrate: null });
+		const body = cached ?? JSON.stringify({ heartrate: null, error_reason: 'kv not initialized (cron not yet run)' });
 
 		return new Response(body, {
 			headers: { ...corsHeaders, 'Cache-Control': 'no-store' },
