@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "alive",
+  "compatibility_date": "2026-05-29",
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "directory": "alive-frontend/dist"
+  },
+  "compatibility_flags": [
+    "nodejs_compat"
+  ]
+}
