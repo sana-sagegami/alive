@@ -2,7 +2,7 @@ const OURA_API = 'https://api.ouraring.com/v2/usercollection/heartrate';
 const OURA_AUTHORIZE_URL = 'https://cloud.ouraring.com/oauth/authorize';
 const OURA_TOKEN_URL = 'https://api.ouraring.com/oauth/token';
 const OURA_SCOPE = 'heartrate';
-const ALLOWED_ORIGIN = 'https://alive.bysana.me';
+const ALLOWED_ORIGINS = ['https://alive.bysana.me', 'https://alive.sana37.workers.dev', 'http://localhost:5173'];
 
 interface Env {
 	OURA_CLIENT_ID: string;
@@ -128,11 +128,15 @@ export default {
 
 	async fetch(request: Request, env: Env): Promise<Response> {
 		const url = new URL(request.url);
-		const corsHeaders = {
-			'Access-Control-Allow-Origin': ALLOWED_ORIGIN,
+		const requestOrigin = request.headers.get('Origin');
+		const corsHeaders: Record<string, string> = {
 			'Access-Control-Allow-Methods': 'GET',
 			'Content-Type': 'application/json',
+			Vary: 'Origin',
 		};
+		if (requestOrigin && ALLOWED_ORIGINS.includes(requestOrigin)) {
+			corsHeaders['Access-Control-Allow-Origin'] = requestOrigin;
+		}
 
 		if (request.method === 'OPTIONS') {
 			return new Response(null, { headers: corsHeaders });
