@@ -4,7 +4,13 @@
       "Bash(curl -s https://alive-worker.alive-sana.workers.dev)",
       "Bash(python3 -m json.tool)",
       "Bash(npx wrangler *)",
-      "Bash(curl -s https://alive-worker.alive-sana.workers.dev/debug)"
+      "Bash(curl -s https://alive-worker.alive-sana.workers.dev/debug)",
+      "Bash(curl -sv https://alive-worker.alive-sana.workers.dev/)",
+      "Bash(curl -sv https://alive-worker.alive-sana.workers.dev/debug)",
+      "Bash(curl -s -o /tmp/out1.txt -w \"HTTP %{http_code}\\\\n\" https://alive-worker.alive-sana.workers.dev/ --max-time 10)",
+      "Read(//tmp/**)",
+      "Bash(curl -s -o /tmp/out2.txt -w \"HTTP %{http_code}\\\\n\" https://alive.alive-sana.workers.dev/ --max-time 10)",
+      "Bash(curl -s -o /tmp/out3.txt -w \"HTTP %{http_code}\\\\n\" https://alive.alive-sana.workers.dev/debug --max-time 10)"
     ]
   }
 }
